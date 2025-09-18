@@ -14,10 +14,10 @@ Dette er et repository for å organisere og dele informasjon om Knowit Stavanger
 
 Gallery
 
-![bilde1]("./media/gallery-overview.jpg")
-![bilde2]("./media/gallery-my-images.jpg")
-![bilde3]("/media/gallery-details.jpg")
-![bilde4]("/media/gallery-details-my-image.jpg")
+![bilde1](/media/gallery-overview.jpg)
+![bilde2](/media/gallery-my-images.jpg)
+![bilde3](/media/gallery-details.jpg)
+![bilde4](/media/gallery-details-my-image.jpg)
 
 ### Basis Funksjonalitet
 - Bruker kan logge inn
