@@ -1,0 +1,1 @@
+# knowit-stavanger-fagtur-2025
