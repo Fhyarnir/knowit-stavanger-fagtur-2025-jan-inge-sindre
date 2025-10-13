@@ -8,7 +8,7 @@ Dette er et repository for å organisere og dele informasjon om Knowit Stavanger
 | Presentere oppgave og inndeling av lag| RO m | 09:00        |
 | Lunsj                 | Kantine | 12:00        |
 | Presentasjon                 | ROM | 14:00        |
-| Kåre vinner                 | ROM | 14:45        |
+| Kåring av vinnere            | ROM | 14:45        |
 
 ## Oppgave
 
