@@ -2,6 +2,8 @@
 
 Dette er et repository for å organisere og dele informasjon om Knowit Stavanger sin fagtur i 2025.
 
+Test endring Jan Inge
+
 ## Timeplan
 | Aktivitet                          | Sted               | Tid          |
 |-----------------------------------|--------------------|--------------|
