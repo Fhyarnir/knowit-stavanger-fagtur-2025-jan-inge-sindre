@@ -1,3 +1,24 @@
 - Install Elm https://guide.elm-lang.org/install/elm
 - Version is Elm 0.19.1
 - Documentation in https://guide.elm-lang.org/
+- In frontend folder, elm init
+- Read https://github.com/elm/compiler/blob/master/hints/init.md
+- Create src/Main.elm with quick sample from https://guide.elm-lang.org/
+- Build
+    - elm make src/Main.elm --output=dist/index.html
+    - C:\Users\jannyg\Documents\Projects\knowit-stavanger-fagtur-2025-jan-inge-sindre\frontend\elm-stuff\0.19.1\d.dat: openBinaryFile: resource busy (file is locked)
+    - Delete frontend\elm-stuff\0.19.1\lock
+    - elm make src/Main.elm --output=dist/index.html
+    - -- MODULE NAME MISSING -------------------------------------------- src\Main.elm
+    - Add to top of src\Main.elm "module Main exposing (main)"
+    - Same error with "elm make src/Main.elm --output=dist/index.html"
+    - Change src\Main.elm from "module Main exposing (main)" to "module Frontend.Main exposing (main)"
+    - Told to change back to Main (Frontend.Main -> Main)
+    - Run same command again "elm make src/Main.elm --output=dist/index.html"
+    - Success! Compiled 1 module. (Main ---> dist/index.html)
+- Serve
+    - npx serve dist
+    - 'y' to install serve@14.2.5
+    - Local:    http://localhost:3000
+    - Network:  http://10.2.0.2:3000
+    - In local link, able to use frontend with buttons +/- 1
