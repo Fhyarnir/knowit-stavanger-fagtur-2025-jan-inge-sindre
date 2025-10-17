@@ -11,6 +11,8 @@ import Html.Events exposing (onClick)
 type alias Image =
     { url : String
     , title : String
+    , idTag : String
+    , allowedUserTags : List String
     }
 
 type User
@@ -21,8 +23,7 @@ type User
 
 
 type alias Model =
-    { user : User
-    }
+    { user : User }
 
 
 init : () -> ( Model, Cmd Msg )
@@ -49,7 +50,7 @@ update msg model =
             ( { model | user = None }, Cmd.none )
 
 
--- VIEW
+-- APP
 
 main : Program () Model Msg
 main =
@@ -61,36 +62,27 @@ main =
         }
 
 
+-- VIEW
+
 view : Model -> Html Msg
 view model =
     let
-        bgColor =
+        ( bgColor, currentTag, titleText ) =
             case model.user of
                 JanInge ->
-                    "#ffdddd" -- rød bakgrunn
+                    ( "#ffdddd", "001", "Innlogget som Jan Inge" )
 
                 Sindre ->
-                    "#dde6ff" -- blå bakgrunn
+                    ( "#dde6ff", "002", "Innlogget som Sindre" )
 
                 Ghost ->
-                    "#e0e0e0" -- grå bakgrunn
+                    ( "#e0e0e0", "003", "Innlogget som Ghost" )
 
                 None ->
-                    "white"
+                    ( "white", "--", "Ikke innlogget" )
 
-        titleText =
-            case model.user of
-                JanInge ->
-                    "Innlogget som Jan Inge"
-
-                Sindre ->
-                    "Innlogget som Sindre"
-
-                Ghost ->
-                    "Innlogget som Ghost"
-
-                None ->
-                    "Ikke innlogget"
+        visible =
+            visibleImages model.user images
     in
     div
         [ style "font-family" "system-ui, sans-serif"
@@ -99,11 +91,20 @@ view model =
         , style "padding" "2rem"
         , style "transition" "background 0.3s ease"
         ]
-        [ div [ style "text-align" "center", style "margin-bottom" "1rem" ]
-            [ text titleText
-            ]
+        [ div [ style "text-align" "center", style "margin-bottom" "0.75rem", style "font-weight" "600" ]
+            [ text (titleText ++ "  |  Tag: " ++ currentTag) ]
         , viewLoginButtons model.user
-        , viewGrid images
+        , if List.isEmpty visible then
+            div
+                [ style "max-width" "1200px"
+                , style "margin" "0 auto"
+                , style "text-align" "center"
+                , style "color" "#6b7280"
+                , style "padding" "1rem 0 2rem"
+                ]
+                [ text "Ingen bilder tilgjengelig." ]
+          else
+            viewGrid visible
         ]
 
 
@@ -124,12 +125,12 @@ viewLoginButtons currentUser =
                 ]
                 [ text label ]
     in
-    div [ style "text-align" "center", style "margin-bottom" "2rem" ]
+    div [ style "text-align" "center", style "margin-bottom" "1.5rem" ]
         (case currentUser of
             None ->
-                [ btn JanInge "Logg inn som Jan Inge" "#e74c3c"
-                , btn Sindre "Logg inn som Sindre" "#3498db"
-                , btn Ghost "Logg inn som Ghost" "#7f8c8d"
+                [ btn JanInge "Logg inn som Jan Inge (001)" "#e74c3c"
+                , btn Sindre "Logg inn som Sindre (002)" "#3498db"
+                , btn Ghost "Logg inn som Ghost (003)" "#7f8c8d"
                 ]
 
             _ ->
@@ -148,17 +149,7 @@ viewLoginButtons currentUser =
         )
 
 
--- GRID VIEW
-
-images : List Image
-images =
-    [ { url = "bilde1.webp", title = "Bilde 1" }
-    , { url = "bilde2.jpg", title = "Bilde 2" }
-    , { url = "bilde3.png", title = "Bilde 3" }
-    , { url = "bilde1.webp", title = "Bilde 4" }
-    , { url = "bilde2.jpg", title = "Bilde 5" }
-    ]
-
+-- GRID
 
 viewGrid : List Image -> Html Msg
 viewGrid items =
@@ -199,5 +190,51 @@ viewCard imgData =
             , style "color" "#374151"
             , style "text-align" "center"
             ]
-            [ text imgData.title ]
+            [ text (imgData.title ++ " | " ++ imgData.idTag) ]
         ]
+
+
+-- DATA + ACL
+
+images : List Image
+images =
+    [ { url = "bilde1.webp", title = "Bilde 1", idTag = "IMG-A12B3", allowedUserTags = [ "001" ] }
+    , { url = "bilde2.jpg", title = "Bilde 2", idTag = "IMG-C91D4", allowedUserTags = [ "001" ] }
+    , { url = "bilde3.png", title = "Bilde 3", idTag = "IMG-Z73F2", allowedUserTags = [ "002" ] }
+    , { url = "bilde4.jpg", title = "Bilde 5", idTag = "IMG-P84R1", allowedUserTags = [ "002" ] }
+    , { url = "bilde5.jpg", title = "Bilde 4", idTag = "IMG-T56K9", allowedUserTags = [ "003" ] }
+    , { url = "default1.jpg", title = "Standard bilde 1", idTag = "IMG-Q47N8", allowedUserTags = [ ] }
+    , { url = "default2.jpg", title = "Standard bilde 2", idTag = "IMG-R52K1", allowedUserTags = [ ] }
+    ]
+
+
+visibleImages : User -> List Image -> List Image
+visibleImages user imgs =
+    case userTag user of
+        Nothing ->
+            -- Ikke innlogget: vis kun offentlige bilder
+            List.filter (\i -> List.isEmpty (i.allowedUserTags)) imgs
+
+        Just tag ->
+            -- Innlogget: vis offentlige + brukers egne
+            List.filter
+                (\i ->
+                    List.isEmpty i.allowedUserTags
+                        || List.member tag i.allowedUserTags
+                )
+                imgs
+
+userTag : User -> Maybe String
+userTag u =
+    case u of
+        JanInge ->
+            Just "001"
+
+        Sindre ->
+            Just "002"
+
+        Ghost ->
+            Just "003"
+
+        None ->
+            Nothing

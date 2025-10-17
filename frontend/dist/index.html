@@ -5207,12 +5207,51 @@ var $author$project$Main$update = F2(
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$images = _List_fromArray(
 	[
-		{title: 'Bilde 1', url: 'bilde1.webp'},
-		{title: 'Bilde 2', url: 'bilde2.jpg'},
-		{title: 'Bilde 3', url: 'bilde3.png'},
-		{title: 'Bilde 4', url: 'bilde1.webp'},
-		{title: 'Bilde 5', url: 'bilde2.jpg'}
+		{
+		allowedUserTags: _List_fromArray(
+			['001']),
+		idTag: 'IMG-A12B3',
+		title: 'Bilde 1',
+		url: 'bilde1.webp'
+	},
+		{
+		allowedUserTags: _List_fromArray(
+			['001']),
+		idTag: 'IMG-C91D4',
+		title: 'Bilde 2',
+		url: 'bilde2.jpg'
+	},
+		{
+		allowedUserTags: _List_fromArray(
+			['002']),
+		idTag: 'IMG-Z73F2',
+		title: 'Bilde 3',
+		url: 'bilde3.png'
+	},
+		{
+		allowedUserTags: _List_fromArray(
+			['002']),
+		idTag: 'IMG-P84R1',
+		title: 'Bilde 5',
+		url: 'bilde4.jpg'
+	},
+		{
+		allowedUserTags: _List_fromArray(
+			['003']),
+		idTag: 'IMG-T56K9',
+		title: 'Bilde 4',
+		url: 'bilde5.jpg'
+	},
+		{allowedUserTags: _List_Nil, idTag: 'IMG-Q47N8', title: 'Standard bilde 1', url: 'default1.jpg'},
+		{allowedUserTags: _List_Nil, idTag: 'IMG-R52K1', title: 'Standard bilde 2', url: 'default2.jpg'}
 	]);
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -5274,7 +5313,7 @@ var $author$project$Main$viewCard = function (imgData) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(imgData.title)
+						$elm$html$Html$text(imgData.title + (' | ' + imgData.idTag))
 					]))
 			]));
 };
@@ -5344,15 +5383,15 @@ var $author$project$Main$viewLoginButtons = function (currentUser) {
 		_List_fromArray(
 			[
 				A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-				A2($elm$html$Html$Attributes$style, 'margin-bottom', '2rem')
+				A2($elm$html$Html$Attributes$style, 'margin-bottom', '1.5rem')
 			]),
 		function () {
 			if (currentUser.$ === 'None') {
 				return _List_fromArray(
 					[
-						A3(btn, $author$project$Main$JanInge, 'Logg inn som Jan Inge', '#e74c3c'),
-						A3(btn, $author$project$Main$Sindre, 'Logg inn som Sindre', '#3498db'),
-						A3(btn, $author$project$Main$Ghost, 'Logg inn som Ghost', '#7f8c8d')
+						A3(btn, $author$project$Main$JanInge, 'Logg inn som Jan Inge (001)', '#e74c3c'),
+						A3(btn, $author$project$Main$Sindre, 'Logg inn som Sindre (002)', '#3498db'),
+						A3(btn, $author$project$Main$Ghost, 'Logg inn som Ghost (003)', '#7f8c8d')
 					]);
 			} else {
 				return _List_fromArray(
@@ -5378,33 +5417,97 @@ var $author$project$Main$viewLoginButtons = function (currentUser) {
 			}
 		}());
 };
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$Main$userTag = function (u) {
+	switch (u.$) {
+		case 'JanInge':
+			return $elm$core$Maybe$Just('001');
+		case 'Sindre':
+			return $elm$core$Maybe$Just('002');
+		case 'Ghost':
+			return $elm$core$Maybe$Just('003');
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Main$visibleImages = F2(
+	function (user, imgs) {
+		var _v0 = $author$project$Main$userTag(user);
+		if (_v0.$ === 'Nothing') {
+			return A2(
+				$elm$core$List$filter,
+				function (i) {
+					return $elm$core$List$isEmpty(i.allowedUserTags);
+				},
+				imgs);
+		} else {
+			var tag = _v0.a;
+			return A2(
+				$elm$core$List$filter,
+				function (i) {
+					return $elm$core$List$isEmpty(i.allowedUserTags) || A2($elm$core$List$member, tag, i.allowedUserTags);
+				},
+				imgs);
+		}
+	});
 var $author$project$Main$view = function (model) {
-	var titleText = function () {
+	var visible = A2($author$project$Main$visibleImages, model.user, $author$project$Main$images);
+	var _v0 = function () {
 		var _v1 = model.user;
 		switch (_v1.$) {
 			case 'JanInge':
-				return 'Innlogget som Jan Inge';
+				return _Utils_Tuple3('#ffdddd', '001', 'Innlogget som Jan Inge');
 			case 'Sindre':
-				return 'Innlogget som Sindre';
+				return _Utils_Tuple3('#dde6ff', '002', 'Innlogget som Sindre');
 			case 'Ghost':
-				return 'Innlogget som Ghost';
+				return _Utils_Tuple3('#e0e0e0', '003', 'Innlogget som Ghost');
 			default:
-				return 'Ikke innlogget';
+				return _Utils_Tuple3('white', '--', 'Ikke innlogget');
 		}
 	}();
-	var bgColor = function () {
-		var _v0 = model.user;
-		switch (_v0.$) {
-			case 'JanInge':
-				return '#ffdddd';
-			case 'Sindre':
-				return '#dde6ff';
-			case 'Ghost':
-				return '#e0e0e0';
-			default:
-				return 'white';
-		}
-	}();
+	var bgColor = _v0.a;
+	var currentTag = _v0.b;
+	var titleText = _v0.c;
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -5422,14 +5525,28 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
-						A2($elm$html$Html$Attributes$style, 'margin-bottom', '1rem')
+						A2($elm$html$Html$Attributes$style, 'margin-bottom', '0.75rem'),
+						A2($elm$html$Html$Attributes$style, 'font-weight', '600')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(titleText)
+						$elm$html$Html$text(titleText + ('  |  Tag: ' + currentTag))
 					])),
 				$author$project$Main$viewLoginButtons(model.user),
-				$author$project$Main$viewGrid($author$project$Main$images)
+				$elm$core$List$isEmpty(visible) ? A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'max-width', '1200px'),
+						A2($elm$html$Html$Attributes$style, 'margin', '0 auto'),
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'color', '#6b7280'),
+						A2($elm$html$Html$Attributes$style, 'padding', '1rem 0 2rem')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Ingen bilder tilgjengelig.')
+					])) : $author$project$Main$viewGrid(visible)
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
