@@ -22,3 +22,16 @@
     - Local:    http://localhost:3000
     - Network:  http://10.2.0.2:3000
     - In local link, able to use frontend with buttons +/- 1
+- Bruker kan logge inn
+    - la backend gjøre azure ad innlogging
+- Bruker kan liste ut alle bildene i et grid
+    - legg til statiske bilder i frontend\assets
+    - cp frontend/assets/bilde1.webp frontend/dist/
+    - cp frontend/assets/bilde2.jpg frontend/dist/
+    - cp frontend/assets/bilde3.png frontend/dist/
+    - elm make src/Main.elm --output=dist/index.html
+    - npx serve dist
+- Bruker kan se sine egne bilder
+- Bruker kan slette og erstatte egne bilder
+- Bruker kan laste opp bilder
+- Bruker kan klikke på bilde og se detaljer, Kommentarer etc

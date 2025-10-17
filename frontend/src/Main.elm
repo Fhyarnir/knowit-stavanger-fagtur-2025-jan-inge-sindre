@@ -1,25 +1,15 @@
 module Main exposing (main)
 
-import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, img)
+import Html.Attributes exposing (alt, src, style)
 
+main : Html msg
 main =
-  Browser.sandbox { init = 0, update = update, view = view }
-
-type Msg = Increment | Decrement
-
-update msg model =
-  case msg of
-    Increment ->
-      model + 1
-
-    Decrement ->
-      model - 1
-
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
+    div []
+        [ img
+            [ src "bilde1.webp"
+            , alt "App logo"
+            , style "width" "150px"
+            ]
+            []
+        ]
